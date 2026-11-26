@@ -9,7 +9,7 @@ FetchContent_Declare(
     GIT_TAG        3.5.1 
 )
 
-FetchContent_MakeAvailable(catch)
+FetchContent_MakeAvailable(glfw)
 
 set(SOURCE
 src/main.cpp)
