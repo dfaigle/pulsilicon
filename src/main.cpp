@@ -1,8 +1,14 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include "imgui.h"
+#include "implot.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+
+int w, h, x;
+int current_read = 5;
+float xs[] = {0, 1, 2, 3, 4};
+float ys[] = {0, 1, 4, 9, 16};
 
 
 
@@ -37,6 +43,9 @@ int main()
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
+    ImGui::StyleColorsDark();
+
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -51,14 +60,24 @@ int main()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        ImGui::ShowDemoWindow(); 
         
-        int w, h;
-        glfwGetWindowSize(window, &w, &h);
+        glfwGetFramebufferSize(window, &w, &h);
         glViewport(0,0,w,h);
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);  
-        
+
+        ImGui::Begin("Demo window");
+        ImGui::Button("Hello!");
+        ImGui::End();
+
+        ImGui::Begin("My first plot");
+        if (ImPlot::BeginPlot("Squares")) {
+            ImPlot::PlotLine("x^2", xs, ys, 5);
+            ImPlot::EndPlot();
+        }
+
+        ImGui::End();
+
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         
@@ -68,6 +87,7 @@ int main()
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
     glfwDestroyWindow(window);

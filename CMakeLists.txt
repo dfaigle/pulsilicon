@@ -17,7 +17,14 @@ FetchContent_Declare(
     GIT_SHALLOW    TRUE
 )
 
-FetchContent_MakeAvailable(glfw imgui)
+FetchContent_Declare(
+    implot
+    GIT_REPOSITORY https://github.com/epezent/implot
+    GIT_TAG        v1.1
+    GIT_SHALLOW    TRUE
+)
+
+FetchContent_MakeAvailable(glfw imgui implot)
 
 find_package(OpenGL REQUIRED)
 
@@ -30,15 +37,27 @@ add_library(imgui STATIC
     ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
     ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
+
 target_include_directories(imgui PUBLIC
     ${imgui_SOURCE_DIR}
     ${imgui_SOURCE_DIR}/backends
 )
+
+add_library(implot STATIC
+    ${implot_SOURCE_DIR}/implot_items.cpp
+    ${implot_SOURCE_DIR}/implot_demo.cpp
+    ${implot_SOURCE_DIR}/implot.cpp
+)
+
+target_include_directories(implot PUBLIC
+    ${implot_SOURCE_DIR}
+)
 target_link_libraries(imgui PUBLIC glfw OpenGL::GL)
+target_link_libraries(implot PUBLIC imgui)
 
 set(SOURCE
     src/main.cpp
 )
 add_executable(pulsicon ${SOURCE})
 
-target_link_libraries(pulsicon PRIVATE imgui)
+target_link_libraries(pulsicon PRIVATE implot)
