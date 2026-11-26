@@ -26,7 +26,8 @@ int main()
     glfwSetKeyCallback(window, key_callback);
 
     while (!glfwWindowShouldClose(window))
-    {
+    {               
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
