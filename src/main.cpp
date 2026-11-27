@@ -1,16 +1,20 @@
 #include <iostream>
+#include <vector>
+#include <cmath> 
+
 #include <GLFW/glfw3.h>
 #include "imgui.h"
 #include "implot.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+
 int w, h, x;
 int current_read = 5;
-float xs[] = {0, 1, 2, 3, 4};
-float ys[] = {0, 1, 4, 9, 16};
 
-
+std::vector<float> ys;
+std::vector<float> xs;
+float t = static_cast<float>(glfwGetTime()); 
 
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -70,9 +74,13 @@ int main()
         ImGui::Button("Hello!");
         ImGui::End();
 
+        float t = static_cast<float>(glfwGetTime());   // Sekunden seit Programmstart
+        xs.push_back(t);
+        ys.push_back(std::sin(t));  
         ImGui::Begin("My first plot");
         if (ImPlot::BeginPlot("Squares")) {
-            ImPlot::PlotLine("x^2", xs, ys, 5);
+            ImPlot::SetupAxisLimits(ImAxis_X1, t - 10.00, t + 10.00, ImPlotCond_Always);
+            ImPlot::PlotLine("sin", xs.data(), ys.data(), static_cast<int>(xs.size()));
             ImPlot::EndPlot();
         }
 
